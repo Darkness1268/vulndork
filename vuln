@@ -1,0 +1,77 @@
+try:
+  from googlesearch import search
+except ImportError:
+  print("No module named 'google' found")
+
+import requests
+from bs4 import BeautifulSoup
+import re
+
+class VulnerabilityScanner:
+  def __init__(self, target_url):
+      self.target_url = target_url
+
+  def scan(self):
+      try:
+          response = requests.get(self.target_url)
+          response.raise_for_status()  # Raise an error for bad responses
+          self.check_vulnerabilities(response.text)
+      except requests.exceptions.RequestException as e:
+          print(f"Error accessing {self.target_url}: {e}")
+
+  def check_vulnerabilities(self, html_content):
+      vulnerabilities_found = False
+
+      # Example vulnerability checks
+      if "SQL syntax" in html_content:
+          print("Potential SQL Injection vulnerability found.")
+          vulnerabilities_found = True
+      if "XSS" in html_content:
+          print("Potential Cross-Site Scripting vulnerability found.")
+          vulnerabilities_found = True
+
+      if not vulnerabilities_found:
+          print("No vulnerabilities found.")
+
+class AutoDorkTool:
+  def __init__(self, query):
+      self.query = query
+
+  def generate_dorks(self):
+      dorks = [
+          f"site:{self.query} inurl:php?id=",
+          f"site:{self.query} inurl:admin",
+          f"site:{self.query} filetype:sql"
+      ]
+      return dorks
+
+def main():
+  print("""  
+  ╔═══╗──╔╗────╔═══╗────╔╗
+  ║╔═╗║─╔╝╚╗───╚╗╔╗║────║║
+  ║║─║╠╗╠╗╔╬══╗─║║║╠══╦═╣║╔╦══╦═╗
+  ║╚═╝║║║║║║╔╗║─║║║║╔╗║╔╣╚╝╣║═╣╔╝
+  ║╔═╗║╚╝║╚╣╚╝║╔╝╚╝║╚╝║║║╔╗╣║═╣║
+  ╚╝─╚╩══╩═╩══╝╚═══╩══╩╝╚╝╚╩══╩╝                         
+                 Coded by: Mr.Dark Hcktvst                                                                       """)
+  print("\033[1;31;36m__________________________________________________________")
+  print("")
+
+  target_url = input("Enter the target URL: ")
+  scanner = VulnerabilityScanner(target_url)
+  scanner.scan()
+
+  query = input("Enter your dork: ")
+  print('')
+  for j in search(query, tld="co.in", num=100, stop=100, pause=2):
+      print(j)
+
+  dork_tool = AutoDorkTool(query)
+  dorks = dork_tool.generate_dorks()
+
+  print("Generated Dorks:")
+  for dork in dorks:
+      print(dork)
+
+if __name__ == "__main__":
+  main()
